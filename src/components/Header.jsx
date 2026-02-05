@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, Bookmark, LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useBookmarks } from "../context/BookmarksContext";
 
 const NAV_LINKS = ["Home", "Explore", "About Us"];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { bookmarkCount } = useBookmarks();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,18 +75,49 @@ export default function Header() {
 
         {/* Auth & Language */}
         <div className="flex items-center gap-4">
-          <a
-            href="#login"
-            className="hidden sm:block text-gray-800 hover:text-primary transition-colors font-medium"
+          {/* Bookmarks */}
+          <Link
+            to="/bookmarks"
+            className="relative hidden sm:flex items-center justify-center w-10 h-10 text-gray-800 hover:text-primary transition-colors"
+            aria-label="My bookmarks"
           >
-            Login
-          </a>
-          <a
-            href="#signup"
-            className="hidden sm:block px-6 py-2 border-2 border-secondary text-secondary rounded-lg hover:bg-secondary hover:text-white transition-colors font-medium"
-          >
-            Sign up
-          </a>
+            <Bookmark size={20} />
+            {bookmarkCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {bookmarkCount}
+              </span>
+            )}
+          </Link>
+
+          {user ? (
+            <>
+              <span className="hidden sm:block text-gray-800 font-medium">
+                {user.name}
+              </span>
+              <button
+                type="button"
+                onClick={logout}
+                className="hidden sm:flex items-center gap-1 text-gray-800 hover:text-primary transition-colors font-medium"
+              >
+                <LogOut size={18} />
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hidden sm:block text-gray-800 hover:text-primary transition-colors font-medium"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="hidden sm:block px-6 py-2 border-2 border-secondary text-secondary rounded-lg hover:bg-secondary hover:text-white transition-colors font-medium"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
           <button
             type="button"
             className="flex items-center gap-1 text-muted hover:text-gray-800 transition-colors"

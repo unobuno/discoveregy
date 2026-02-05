@@ -21,3 +21,7 @@ html {
 body {
   font-family: var(--font-sans);
 }
+button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}

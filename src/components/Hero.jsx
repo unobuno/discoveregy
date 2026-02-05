@@ -4,6 +4,7 @@ import { Play } from "lucide-react";
 export default function Hero() {
   return (
     <section
+      id="home"
       className="relative min-h-screen pt-28 overflow-hidden"
       aria-labelledby="hero-heading"
     >

@@ -1,12 +1,18 @@
+import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Phone, MapPin, Bookmark, Star, BadgeCheck } from "lucide-react";
 import { DESTINATIONS, COMMENTS } from "../data/destinations";
+import { useBookmarks } from "../context/BookmarksContext";
+import BookingModal from "../components/BookingModal";
 
 export default function DestinationDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const destination = DESTINATIONS.find((d) => d.id === Number(id));
+  const bookmarked = destination ? isBookmarked(destination.id) : false;
 
   if (!destination) {
     return (
@@ -46,7 +52,7 @@ export default function DestinationDetail() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative aspect-[4/3] w-full"
+          className="relative aspect-video w-full"
         >
           <img
             src={destination.image.replace("w=400&h=400", "w=800&h=600")}
@@ -71,6 +77,7 @@ export default function DestinationDetail() {
           <div className="flex items-center gap-3">
             <button
               type="button"
+              onClick={() => setIsBookingOpen(true)}
               className="px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:brightness-110 transition-all"
             >
               Book now
@@ -94,10 +101,15 @@ export default function DestinationDetail() {
 
             <button
               type="button"
-              className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-xl text-secondary hover:border-primary hover:text-primary transition-all"
-              aria-label="Save to bookmarks"
+              onClick={() => toggleBookmark(destination.id)}
+              className={`w-12 h-12 flex items-center justify-center border-2 rounded-xl transition-all ${
+                bookmarked
+                  ? "border-primary bg-primary text-white"
+                  : "border-gray-200 text-secondary hover:border-primary hover:text-primary"
+              }`}
+              aria-label={bookmarked ? "Remove from bookmarks" : "Save to bookmarks"}
             >
-              <Bookmark size={20} />
+              <Bookmark size={20} className={bookmarked ? "fill-white" : ""} />
             </button>
           </div>
         </motion.section>
@@ -173,6 +185,13 @@ export default function DestinationDetail() {
         {/* Bottom Padding */}
         <div className="h-8" />
       </main>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        destination={destination}
+      />
     </div>
   );
 }

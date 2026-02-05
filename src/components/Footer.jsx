@@ -1,6 +1,10 @@
 import { Facebook, Twitter, Youtube, Mail } from 'lucide-react';
 
-const USEFUL_LINKS = ['Home', 'Explore', 'About'];
+const USEFUL_LINKS = [
+  { label: 'Home', href: '#home' },
+  { label: 'Explore', href: '#explore' },
+  { label: 'About Us', href: '#about-us' },
+];
 const RESOURCES = ['Become a guide', 'Support', 'Help'];
 
 const SOCIAL_LINKS = [
@@ -32,12 +36,12 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               {USEFUL_LINKS.map((link) => (
-                <li key={link}>
+                <li key={link.label}>
                   <a
-                    href={`#${link.toLowerCase()}`}
+                    href={link.href}
                     className="text-muted hover:text-primary transition-colors text-sm"
                   >
-                    {link}
+                    {link.label}
                   </a>
                 </li>
               ))}
