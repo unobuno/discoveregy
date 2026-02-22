@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
     return { success: false, error: "Invalid email or password" };
   };
 
-  const signup = (name, email, password, type = "tourist") => {
+  const signup = (name, email, password, type = "tourist", extra = {}) => {
     const users = JSON.parse(localStorage.getItem("degy_users") || "[]");
 
     if (users.some((u) => u.email === email)) {
@@ -48,6 +48,12 @@ export function AuthProvider({ children }) {
       email,
       password,
       type,
+      phone: extra.phone || "",
+      gender: extra.gender || "",
+      age: extra.age || null,
+      ...(type === "tourist"
+        ? { nationality: extra.nationality || "" }
+        : { languages: extra.languages || [] }),
       createdAt: new Date().toISOString(),
     };
 
